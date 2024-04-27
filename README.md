@@ -118,7 +118,7 @@ Duplicate records on one transaction.
 
 ## Feedback & Reviews
 
-- [CashTokens CHIP Issues](https://github.com/2qx/short-metadata/issues)
+- [CashTokens CHIP Issues](https://github.com/2qx/short-metadata-protocol/issues)
 - [`CHIP SMP` - Bitcoin Cash Research] https://bitcoincashresearch.org/ TBD
 
 ## Acknowledgements
