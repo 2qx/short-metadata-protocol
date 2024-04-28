@@ -7,7 +7,7 @@
         Status: Draft
         Initial Publication Date: 2024-04-26
         Latest Revision Date: 2024-04-26
-        Version: 0
+        Version: 0.2
 
 
 ## Summary
@@ -46,11 +46,11 @@ Each record must be prefixed with the protocol identifier mapped to four byte AS
 
 A special four-byte `<meta>` tag is used to specify which records go with which outputs in a transaction. 
 
-| byte |   `<meta>` | Custom four-byte meta mapping field                    |
-| ---- | ---------: | ------------------------------------------------------ |
-| 0    | `fungible` | Boolean, true for fungible token records, range `0-1`  |
-| 1    |     `type` | Selector indicating the type of record `0-F`           |
-| 2-3  |   `in/out` | The index of the input/output being linked `00-FF` 255 |
+| byte |  `<meta>` | Custom four-byte meta mapping field                    |
+| ---- | --------: | ------------------------------------------------------ |
+| 0    | `genesis` | Boolean, true if genesis token mint, range `0-1`       |
+| 1    |    `type` | Selector indicating the type of record `0-F`           |
+| 2-3  |  `in/out` | The index of the input/output being linked `00-FF` 255 |
 
 Where, the type of data fields available are enumerated below:
 
@@ -63,7 +63,7 @@ Where, the type of data fields available are enumerated below:
 
  [TODO check parse.bytecode case](https://cashtokens.org/docs/bcmr/chip#rendering-nfts-in-user-interfaces) 
 
-For example, to record an icon of a fungible token created from the seventh input, the `<meta>` tag would be `0x02 1207`, where the Name for an *NFT* on the fourth *output* would be tagged `0x02 0104`, 
+For example, to record an icon of a fungible token created from the seventh input, the `<meta>` tag would be `0x02 1207`, where the Name for an *NFT* on the fourth *output* from an existing category would be tagged `0x02 0104`, 
 
 
 ### Fungible Token Supply Records
@@ -81,8 +81,6 @@ For example, to record an icon of a fungible token created from the seventh inpu
  A unique numeric `enumerator` given in Script Number format (A.K.A. CSCriptNum). An enumerator is optional; if the field is null or empty, the entire record should be ignored. Software implementers should interpret a zero value PushBytes (`0x00`) as a null value.
 
 This proposal allows for issuing mixed number and letter combos, such as `CAMPAIGN2023-21` + `-` + `100`. The `ticker` and `enumerator` should be joined with a hyphen `-` when displayed as one symbol to the user, just as with BCMR. 
-
-
 
 If the `decimals` field is provided, it may be used to indicate how many places to display.
  
