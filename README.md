@@ -20,9 +20,9 @@ This proposal does not require coordinated deployment.
 
 ## Motivation 
 
-End users or contracts issuing tokens in an autonomous way may find it difficult to sign a json string, maintain a domain or update a registry repository. For contracts to routinely and autonomously issue tokens with metadata, it may be nice to have a suitable format where a contract may specify metadata requirements itself.
+Contracts issuing tokens in an autonomous way may find it difficult to sign a json string, maintain a domain or update a registry repository. For contracts to routinely and autonomously issue tokens with metadata, it may be nice to have a suitable format where a contract may specify metadata requirements itself.
 
-The goal is to have the lowest floor possible, but also a very low ceiling. That is, if a token issuer has several hundred satoshis, they can easily satisfy the barrier an publish metadata record in a few seconds from a phone. But for established entities, with dedicated computing resources, a more flexible and robust schema like BCMR would still the obvious winner.
+Likewise, non-technical users may also want to easily broadcast token data to the network with an ultra low barrier to entry―a low floor, but a very low ceiling. If a token issuer has several hundred satoshis in their wallet, they might easily satisfy the barrier an publish a metadata record in a few seconds from a phone or SPV wallet. 
 
 ## Overview
 
