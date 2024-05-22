@@ -107,6 +107,8 @@ Further examples below:
 |   `0302` | Data in NFT Commitment of output 2                |
 |   `1300` | Parsing information for NFT series from input 0  |
 
+The meta tag encoding is not very space efficient, but aims to be be human readable, easy to implement while saving two PushByte codes.
+
 ### Ticker Records
 
 
@@ -244,13 +246,13 @@ bytes ticker = new LockingBytecodeNullData([
     0x534D5030,
     0x1000,
     bytes('XAMPL-2023-C'),
-    bytes('29304958'),
+    bytes(29304958),
     0x06
 ]);
 
 // Or the same record as above, directly, 
 // which may less unlocking script. 
-bytes enumerator = bytes('29304958');
+bytes enumerator = bytes(29304958);
 bytes ticker = 0x6a04534d50300210051858414D504C2D323032332D43 + 
                bytes(enumerator.length) + enumerator +
                0x0206;
