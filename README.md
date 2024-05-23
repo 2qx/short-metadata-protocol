@@ -20,19 +20,19 @@ This proposal does not require coordinated deployment.
 
 ## Motivation 
 
-Contracts issuing tokens in an autonomous way may find it difficult to sign a json string, maintain a domain or update a registry repository. For contracts to routinely and autonomously issue tokens with metadata, it may be nice to have a suitable format where a contract may specify metadata requirements itself.
+Contracts issuing tokens in an autonomous way may find it difficult to sign a JSON string, maintain a domain or update a registry repository. For contracts to routinely and autonomously issue tokens with metadata, it may be nice to have a suitable format where a contract may specify metadata requirements itself.
 
 Likewise, non-technical users may also want to easily broadcast token data to the network with an ultra low barrier to entry―a low floor, with a low ceiling. If a token issuer has several hundred satoshis in their wallet, they might easily satisfy the barrier and publish a metadata record in a few seconds from a phone or SPV wallet—which can start their journey.
 
 ## Overview
 
-This is a schema to record metadata on-chain at minting in a data-carrier output. It is not a replacement for [Bitcoin Cash Metadata Registries (BCMR)](https://cashtokens.org/docs/category/metadata-registries-chip), rather it is short and limited alternative for BitcoinScript, as transpiled from a higher-level syntax like [CashScript](https://cashscript.org).  
+This is a schema to record metadata on-chain at minting in a data-carrier output. It is not a replacement for [Bitcoin Cash Metadata Registries (BCMR)](https://cashtokens.org/docs/category/metadata-registries-chip), rather it is a short and limited alternative for BitcoinScript, as transpiled from a higher-level syntax like [CashScript](https://cashscript.org).  
 
 Prunable data-carrier output messages have proved very useful for similar problems.  Token Metadata can be recorded by the minting transaction and implicitly authenticated simultaneously by the minting process.
 
 ## Benefits
 
-The aim of this proposal is to provide a minimal mechanism for a contract, or user, to store several hundred bytes of information in a fast and cost effective way, with a very low barrier to entry. 
+The aim of this proposal is to provide a minimal mechanism for a contract, or user, to store several hundred bytes of information in a fast and cost effective way, with a very low barrier of entry. 
 
 In 2024, op_return data is stored and propagated by many nodes; so a common format to store metadata would give contracts and users a way to mint tokens with metadata in a decentralized way, storing the data at the cost of 1 sat/byte for the near future. 
 
@@ -102,14 +102,14 @@ Below are some examples of `<meta>` tags, and a short description of what the re
 |   `1000` | Symbol for NFT series created from input 0       |
 |   `1000` | Symbol, decimal place for FT from input 0        |
 |   `1100` | Name and description FT from input 0             |
-|   `1200` | Icon (or url) of FT minted at  input 0           |
+|   `1200` | Icon (or website) of FT minted at  input 0       |
 |   `1120` | Name of record the FT created from input 31      |
-|   `1120` | Name of record the FT created from input 31      |
+|   `1120` | Name for NFT series created from input 31        |
 |   `1002` | Ticker for FT minted from input 2                |
 |   `0302` | Code for parsing NFT Commitment of output 2      |
 |   `1300` | Parsing information for NFT series from input 0  |
 
-The meta tag encoding is not very space efficient, but aims to be human readable, easy to implement, while saving the space of two PushByte codes in the process.
+The meta tag encoding is not space efficient, but aims to be human readable, easy to implement. The tag saves the space of two PushBytes.
 
 ### Ticker Records
 
@@ -178,7 +178,7 @@ The `symbol`, `enumerator`  bytecode data MUST refer to data in the genesis tran
 Where the `bytecode` represents the VM op_code instructions to read the NFT commitment and push a set of values to the stack, and `field<#>`s are the corresponding field names for that data, descending down the stack. 
 
 
-## Note for Contract issued Non-fungible Token Issuers 
+## Note on Contract issued Non-fungible Tokens 
 
 Token issuers, particularly contract issued NFTs, **SHOULD NOT** utilize this protocol to reiterate or restate the name or number in the NFT commitment. If the number of the NFT is in an immutable commitment, that sequential numeric data is sufficient to specify the NFT number and should not need to be duplicated in an op_return.
 
@@ -188,7 +188,7 @@ Issuers should assume software follows guidelines for [displaying and interpreti
 
 ### Duplicate records
 
-Multiple name records may exist in one transaction, referencing different genesis inputs or different NFT outputs. Conflicting records exist for the same input, only the first record should be recognized, and the remaining records should be ignored.  
+Multiple name records may exist in one transaction, referencing different genesis inputs or different NFT outputs. If conflicting records (of the same type) exist for the same input, only the first record should be recognized, and the remaining records should be ignored.  
 
 Multiple URI records may exist when specifying different tags (`web`, `icon`), however, for other record types and duplicate tags for the same URI, the second output in a transaction for the same `<meta>` tag should be ignored. 
 
@@ -201,7 +201,7 @@ A single `<name>` record is shared across fungible and non-fungible tokens per o
 
 - If an op return does not have the `SRM0` identifier, discard the whole record. 
 - If the protocol identifier was not prepended with `0x04` PushBytes, discard the whole record.
-- If the second field in the record is not a two-bytes long (`<meta>` tag), discard the whole record.
+- If the second entry in the record is not two-bytes long (`<meta>` tag), discard the whole record.
 - If the `<meta.genesis>` record is not in `[0|1]`, discard the whole record.
 - If `<meta.type>` is not within the range of types denoted above, discard the whole record.
 - If `<meta.position>` is not within `0-255`, discard the whole record.
@@ -209,11 +209,12 @@ A single `<name>` record is shared across fungible and non-fungible tokens per o
 - If a `<ticker.symbol>` record contains characters that are not capital letters, numbers, and hyphens (regular expression: `^[A-Z0-9]+[-A-Z0-9]*$`), discard the whole record.
 - If a `<ticker.symbol>` is null (`0x4c00`), discard the whole record.
 - For non-genesis record, if a `ticker` record does not have an `enumerator` record, discard the whole record. 
-- If a `<uri.identifier>` is NOT an entirely lowercase, alphanumeric strings, with no whitespace or special characters other than dashes, discard the whole record. 
+- If a `<uri.identifier>` is NOT entirely lowercase, alphanumeric strings, with no whitespace or special characters other than dashes, discard the whole record. 
 - If a `<uri>` record has a null `value` field, discard the whole record. 
 - If a non-genesis `<uri>` record uses a variable or contains a dollar sign, discard the whole record.
 - If parsing the record from PushBytes fails (if the remaining byte stack has non-zero length) discard the whole record.
-- If parsing the record does with PushBytes does not result in an empty string, discard the whole record. 
+- If parsing a record (with PushBytes) does not end in an empty string, discard the whole record. 
+- If a record ends prematurely while parsing a given length field, discard the whole record. 
   
 ### Conditions that do not invalidate records: 
 
@@ -330,7 +331,7 @@ It is theoretically possible to construct a contract that is so restricted as to
 
 However, if new network features were made available in the future, those features might create a new spending pathway and break the deterministic property of the contract.
 
-It may also be very difficult to specific a fully deterministic contract, or test with certainty that is indeed deterministic.
+It may also be very difficult to specify a fully deterministic contract, or test with certainty that is indeed deterministic.
 
 ## Stakeholder Responses & Statements
 
