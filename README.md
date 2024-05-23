@@ -341,8 +341,8 @@ It may also be very difficult to specify a fully deterministic contract, or test
 
 - [SMP Issues](https://github.com/2qx/short-metadata-protocol/issues)
 - [CHIP 2024-05 SMP: Short Metadata Protocol - Bitcoin Cash Research](https://bitcoincashresearch.org/t/chip-2024-05-smp-short-metadata-protocol/1301)
-- On TG @a2qx_u... signed with 2qx#72497; 🦇
-- [On memo](https://memo.cash/profile/17Rzs3w813zp2JbKRKnvAuZUHUN5uj8U56), signed with 2qx#72497; 🦇
+- On TG @a2qx_user... 
+- [On memo](https://memo.cash/profile/17Rzs3w813zp2JbKRKnvAuZUHUN5uj8U56)
 
 ## Acknowledgements
 
