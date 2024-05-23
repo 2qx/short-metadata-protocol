@@ -109,7 +109,7 @@ Below are some examples of `<meta>` tags, and a short description of what the re
 |   `0302` | Code for parsing NFT Commitment of output 2      |
 |   `1300` | Parsing information for NFT series from input 0  |
 
-The meta tag encoding is not very space efficient, but aims to be human readable, easy to implement, and to saving two PushByte codes in the process.
+The meta tag encoding is not very space efficient, but aims to be human readable, easy to implement, while saving the space of two PushByte codes in the process.
 
 ### Ticker Records
 
