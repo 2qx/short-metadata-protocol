@@ -22,7 +22,7 @@ This proposal does not require coordinated deployment.
 
 Contracts issuing tokens in an autonomous way may find it difficult to sign a json string, maintain a domain or update a registry repository. For contracts to routinely and autonomously issue tokens with metadata, it may be nice to have a suitable format where a contract may specify metadata requirements itself.
 
-Likewise, non-technical users may also want to easily broadcast token data to the network with an ultra low barrier to entry―a low floor, but a very low ceiling. If a token issuer has several hundred satoshis in their wallet, they might easily satisfy the barrier an publish a metadata record in a few seconds from a phone or SPV wallet. 
+Likewise, non-technical users may also want to easily broadcast token data to the network with an ultra low barrier to entry―a low floor, with a low ceiling. If a token issuer has several hundred satoshis in their wallet, they might easily satisfy the barrier and publish a metadata record in a few seconds from a phone or SPV wallet—which can start their journey.
 
 ## Overview
 
@@ -78,9 +78,9 @@ Where, the type of data fields available are enumerated below:
 |    `3` | Parsable | `<bytecode> <field1> ... <fieldx#>` | no   |
 
 
-For example, to record an icon of a fungible token created from the seventh input, the `<meta>` tag would be `0x02 1207`, where the Name for an *NFT* on the fourth *output* from an existing category would be tagged `0x02 0104`, 
+For example, to record an icon of a fungible token created from the seventh input, the `<meta>` tag would be `0x02 1207`, 
 
-In binary, the first example above is as follows:
+In binary, the example above is as follows:
 
     // 0x1207
     //
@@ -89,9 +89,8 @@ In binary, the first example above is as follows:
     // Referencing the 8th input, input[7]
     0000 1000
 
-Further examples below:
 
-#### Meta Examples:
+#### More Meta Tag Examples:
 
 Below are some examples of `<meta>` tags, and a short description of what the record would reference.
 
@@ -110,7 +109,7 @@ Below are some examples of `<meta>` tags, and a short description of what the re
 |   `0302` | Code for parsing NFT Commitment of output 2      |
 |   `1300` | Parsing information for NFT series from input 0  |
 
-The meta tag encoding is not very space efficient, but aims to be be human readable, easy to implement, all while saving two PushByte codes.
+The meta tag encoding is not very space efficient, but aims to be human readable, easy to implement, and to saving two PushByte codes in the process.
 
 ### Ticker Records
 
@@ -158,7 +157,7 @@ The **genesis** transaction for an NFT, or FT series, may utilize 11 variables, 
 | $E           | The Enumerator                 |
 | $[0-7]       | The first 8 parsed data fields |
 
-All variables have one byte fixed with names. 
+All variables have fixed-length, one byte, single character names. 
 
 The associated metadata for an NFT series could be denoted by putting the following URI records in the genesis transaction:
 
