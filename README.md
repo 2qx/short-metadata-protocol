@@ -49,7 +49,7 @@ The following scheme is proposed:
 Records have a common identifier, followed by a two-byte custom mapping field, followed then by the data to associated with the token, where each `<data>` is delimited in PushByte notation (`length data`) and the order is fixed based on the type of record.
 
 
-Each record must be prefixed with the protocol identifier mapped to four byte ASCII hexidecimal and prepended with the length in bytes, i.e. `0x04 534D5030`
+Each record must be prefixed with the protocol identifier mapped to four byte "SMP0" and prepended with the length in bytes, i.e. `0x04 534D5030`
 
 ### Meta mapping tags
 
@@ -92,6 +92,9 @@ In binary, the first example above is as follows:
 Further examples below:
 
 #### Meta Examples:
+
+Below are some examples of `<meta>` tags, and a short description of what the record would reference.
+
 | `<meta>` | Example Record Metadata                          |
 | -------: | ------------------------------------------------ |
 |   `0000` | Symbol and custom enumerator for NFT at output 0 |
@@ -104,10 +107,10 @@ Further examples below:
 |   `1120` | Name of record the FT created from input 31      |
 |   `1120` | Name of record the FT created from input 31      |
 |   `1002` | Ticker for FT minted from input 2                |
-|   `0302` | Data in NFT Commitment of output 2                |
+|   `0302` | Code for parsing NFT Commitment of output 2      |
 |   `1300` | Parsing information for NFT series from input 0  |
 
-The meta tag encoding is not very space efficient, but aims to be be human readable, easy to implement while saving two PushByte codes.
+The meta tag encoding is not very space efficient, but aims to be be human readable, easy to implement, all while saving two PushByte codes.
 
 ### Ticker Records
 
@@ -140,9 +143,30 @@ The `name` and `description` can be encoded in utf-8 delimited with PushBytes fo
 
 [Uri](https://en.wikipedia.org/wiki/Well-known_URI)s such as links to *icons* or *websites* may be expressed with a their own type (`2`) in the record `<meta>` tag. 
 
-The `<identifier>` field MUST be used to indicate what the resource is (`icon` or `web`). The tag should be encoded as unquoted PushByte ASCII strings. If there is no `<tag>` and the first value of data is a valid URI, it should be discarded from lack of context.
+The `<identifier>` field MUST be used to indicate what the resource is (`icon` or `web`). The tag should be encoded as unquoted PushByte utf-8 strings. If there is no `<tag>` and the first value of data is a valid URI, it should be discarded from lack of context.
 
 Token issuers should conform to the [BCMR Recommendations](https://cashtokens.org/docs/bcmr/chip#uri-identifiers) for icons and other uri identifiers.
+
+#### URI Variables
+
+The **genesis** transaction for an NFT, or FT series, may utilize 11 variables, all denoted in the URI by dollar signs:
+
+| URI Variable | Data                           |
+| ------------ | ------------------------------ |
+| $C           | The NFT commitment             |
+| $S           | The Symbol                     |
+| $E           | The Enumerator                 |
+| $[0-7]       | The first 8 parsed data fields |
+
+All variables have one byte fixed with names. 
+
+The associated metadata for an NFT series could be denoted by putting the following URI records in the genesis transaction:
+
+    icon: https://example.invalid/$S/$C.png
+    image: https://example.invalid/$S/$C.svg
+    web: https://example.invalid/$S/$C/details
+
+The `symbol`, `enumerator`  bytecode data MUST refer to data in the genesis transaction. The commitment or parsed data refers to the data obtained from specific NFT sequences or parsed commitment data.
 
 ### Parsable Records
 
@@ -157,7 +181,7 @@ Where the `bytecode` represents the VM op_code instructions to read the NFT comm
 
 ## Note for Contract issued Non-fungible Token Issuers 
 
-Token issuers, particularly contract issued NFTs, **SHOULD NOT** utilize this protocol to reiterate or restate the name or number in the NFT commitment. 
+Token issuers, particularly contract issued NFTs, **SHOULD NOT** utilize this protocol to reiterate or restate the name or number in the NFT commitment. If the number of the NFT is in an immutable commitment, that sequential numeric data is sufficient to specify the NFT number and should not need to be duplicated in an op_return.
 
 Issuers should assume software follows guidelines for [displaying and interpreting commitments](https://cashtokens.org/docs/bcmr/chip#nft-ticker-symbols) and [sequential numbering of NFTs](https://cashtokens.org/docs/bcmr/chip#sequential-nft-commitment-encoding) given by BCMR.
 
@@ -174,7 +198,7 @@ For example, if the `name` and `description` of a fungible token has already bee
 A single `<name>` record is shared across fungible and non-fungible tokens per outpoint. 
 
 
-### Edge case jail
+### Conditions that invalidate records:
 
 - If an op return does not have the `SRM0` identifier, discard the whole record. 
 - If the protocol identifier was not prepended with `0x04` PushBytes, discard the whole record.
@@ -186,12 +210,13 @@ A single `<name>` record is shared across fungible and non-fungible tokens per o
 - If a `<ticker.symbol>` record contains characters that are not capital letters, numbers, and hyphens (regular expression: `^[A-Z0-9]+[-A-Z0-9]*$`), discard the whole record.
 - If a `<ticker.symbol>` is null (`0x4c00`), discard the whole record.
 - For non-genesis record, if a `ticker` record does not specify a unique `enumerator`, discard the whole record. 
-- If a `<uri.identifier>` is an entirely lowercase, alphanumeric strings, with no whitespace or special characters other than dashes, discard the whole record.
-- If a `<uri>` record has a `null` value, only one field, discard the whole record. 
+- If a `<uri.identifier>` is an entirely lowercase, alphanumeric strings, with no whitespace or special characters other than dashes, discard the whole record. 
+- If a `<uri>` record has a null `value` field, discard the whole record. 
+- If a non-genesis `<uri>` record uses a variable or contains a dollar sign, it may be ignored.
 - If parsing the record or data from PushBytes fails, discard the whole record.
 - If parsing the record does with PushBytes does not result in an empty string, discard the whole record. 
   
-### Edge case redemption 
+### Conditions that do not invalidate records: 
 
 - If more than three fields exist on a `ticker` or more than two fields exist on a `name` or `uri` record, the extra fields should be ignored.
 - If a `<ticker.decimals>` is `null`, it should be treated as a zero.
@@ -230,14 +255,14 @@ function getPushDataOpcode(data: Uint8Array): Uint8Array {
   if (byteLength === 0) return Uint8Array.from([0x4c, 0x00]);
   if (byteLength < 76) return Uint8Array.from([byteLength]);
   if (byteLength < 256) return Uint8Array.from([0x4c, byteLength]);
-  // not sure why 0x4d wasn't also implemented here?—2q
+  // see also: https://libauth.org/functions/encodeDataPush.html
   throw Error('Pushdata too large');
 }
 ```
 
 ## Example implementations
 
-Below is a sample specification of a SMR0 record in [CashScript](https://cashscript.org)
+Below is a sample specification of a SMP0 record in [CashScript](https://cashscript.org)
 
 ```javascript
 // In CashScript, using the LockingBytecodeNullData helper  
