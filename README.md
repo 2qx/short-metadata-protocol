@@ -12,7 +12,7 @@
 
 ## Summary
 
-A standard for broadcasting authenticated metadata on-chain.
+A protocol for broadcasting authenticated metadata on-chain.
 
 ## Deployment
 
@@ -34,7 +34,7 @@ Prunable data-carrier output messages have proved very useful for similar proble
 
 The aim of this proposal is to provide a minimal mechanism for a contract, or user, to store several hundred bytes of information in a fast and cost effective way, with a very low barrier to entry. 
 
-In 2024, op_return data is stored a propagated by many nodes; so a common format to store metadata would give contracts and users a way to mint tokens with metadata in a decentralized way, storing the data at the cost of 1 sat/byte for the near future. 
+In 2024, op_return data is stored and propagated by many nodes; so a common format to store metadata would give contracts and users a way to mint tokens with metadata in a decentralized way, storing the data at the cost of 1 sat/byte for the near future. 
 
 
 ## Specification
@@ -55,7 +55,7 @@ Each record must be prefixed with the protocol identifier mapped to four byte "S
 
 A special two-byte `<meta>` tag is used to specify which records go with which data of a transaction. 
 
-Bits 0-3 of the `<meta>` record indicate whether it refers to a genesis transaction (an input) or an NFT minting transaction (an output).
+Bits 0-3 of the `<meta>` record indicate whether it refers to a genesis transaction (an input) or a later NFT mint (an output).
 
 Bits 4-7 indicate the record type.
 
@@ -85,7 +85,7 @@ In binary, the example above is as follows:
     // 0x1207
     //
     // Genesis, Name record  
-    0001 0010 
+    0001 0001 
     // Referencing the 8th input, input[7]
     0000 1000
 
@@ -127,11 +127,11 @@ The meta tag encoding is not very space efficient, but aims to be human readable
 
 This proposal allows for issuing mixed number and letter combos, such as `CAMPAIGN2023-21` + `-` + `100`. The `symbol` and `enumerator` should be joined with a hyphen `-` when displayed as one symbol to the user, just as with BCMR. 
 
-If the `decimals` field is provided, it may be used to indicate how many places to display. The field may optionally be included and defaults to `0` if not included. An even byte should be used if the separator is non-zero i.e. `0x0101`.
+If the `decimals` field is provided, it may be used to indicate how many places to display. The field may optionally be included and defaults to `0` if not included. 
  
 ### Name Records
 
-The `name` and `description` can be encoded in utf-8 delimited with PushBytes format. Both records are optional. If the name for an NFT series are been specified in a genesis transaction, the name record SHOULD NOT be duplicated for each subsequent NFT of a series.
+The `name` and `description` can be encoded in utf-8 delimited with PushBytes format. Both records are optional. If the name for an NFT series has been specified in a genesis transaction, the name record SHOULD NOT be duplicated for each subsequent NFT of a series.
 
 ### Uri Records
 
