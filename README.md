@@ -62,11 +62,11 @@ Bits 4-7 indicate the record type.
 The second **byte** of the `<meta>` record indicates the index of the input (or output) the record refers to, up to the 255th input or output.  
 
 
-| #   |   `<meta>` | Custom two-byte meta mapping field                     |
-| --- | ---------: | ------------------------------------------------------ |
-| 0   |  `genesis` | Boolean, true (1) if genesis token mint, range `0-1`   |
-| 1   |     `type` | Selector indicating the type of record `0-F`           |
-| 2-3 | `position` | The index of the input/output being linked `00-FF` 255 |
+| #   |   `<meta>` | Custom two-byte meta mapping field                            |
+| --- | ---------: | ------------------------------------------------------------- |
+| 0   |  `genesis` | Boolean, true (1) if genesis token mint, range `0-1`          |
+| 1   |     `type` | Selector indicating the type of record `0-3` (see: type enum) |
+| 2-3 | `position` | The index of the input/output being linked `00-FF` 255        |
 
 Where, the type of data fields available are enumerated below:
 
