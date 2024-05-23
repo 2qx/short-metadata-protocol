@@ -208,8 +208,8 @@ A single `<name>` record is shared across fungible and non-fungible tokens per o
 - If the reference given by `<meta.genesis>` and `<meta.position>` doesn't map to an input or output on the transaction, discard the whole record.
 - If a `<ticker.symbol>` record contains characters that are not capital letters, numbers, and hyphens (regular expression: `^[A-Z0-9]+[-A-Z0-9]*$`), discard the whole record.
 - If a `<ticker.symbol>` is null (`0x4c00`), discard the whole record.
-- For non-genesis record, if a `ticker` record does not specify a unique `enumerator`, discard the whole record. 
-- If a `<uri.identifier>` is an entirely lowercase, alphanumeric strings, with no whitespace or special characters other than dashes, discard the whole record. 
+- For non-genesis record, if a `ticker` record does not have an `enumerator` record, discard the whole record. 
+- If a `<uri.identifier>` is NOT an entirely lowercase, alphanumeric strings, with no whitespace or special characters other than dashes, discard the whole record. 
 - If a `<uri>` record has a null `value` field, discard the whole record. 
 - If a non-genesis `<uri>` record uses a variable or contains a dollar sign, it may be ignored.
 - If parsing the record or data from PushBytes fails, discard the whole record.
