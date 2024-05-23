@@ -12,7 +12,7 @@
 
 ## Summary
 
-A protocol for broadcasting authenticated metadata on-chain.
+A protocol for broadcasting authenticated CashToken metadata on-chain.
 
 ## Deployment
 
