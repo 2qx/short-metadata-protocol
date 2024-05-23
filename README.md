@@ -211,8 +211,8 @@ A single `<name>` record is shared across fungible and non-fungible tokens per o
 - For non-genesis record, if a `ticker` record does not have an `enumerator` record, discard the whole record. 
 - If a `<uri.identifier>` is NOT an entirely lowercase, alphanumeric strings, with no whitespace or special characters other than dashes, discard the whole record. 
 - If a `<uri>` record has a null `value` field, discard the whole record. 
-- If a non-genesis `<uri>` record uses a variable or contains a dollar sign, it may be ignored.
-- If parsing the record or data from PushBytes fails, discard the whole record.
+- If a non-genesis `<uri>` record uses a variable or contains a dollar sign, discard the whole record.
+- If parsing the record from PushBytes fails (if the remaining byte stack has non-zero length) discard the whole record.
 - If parsing the record does with PushBytes does not result in an empty string, discard the whole record. 
   
 ### Conditions that do not invalidate records: 
