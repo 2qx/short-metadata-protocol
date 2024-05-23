@@ -1,13 +1,13 @@
 # CHIP-SMP: Short Metadata Protocol
 
-        Title: Short Metadata Protocol
-        Type: Standards
-        Layer: Applications
-        Maintainer: 2qx 
-        Status: Draft
-        Initial Publication Date: 2024-04-26
-        Latest Revision Date: 2024-05-22
-        Version: 0.3
+    Title: Short Metadata Protocol
+    Type: Standards
+    Layer: Applications
+    Maintainer: 2qx 
+    Status: Draft
+    Initial Publication Date: 2024-04-26
+    Latest Revision Date: 2024-05-23
+    Version: 0.3
 
 
 ## Summary
